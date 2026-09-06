@@ -1,0 +1,21 @@
+{
+  "name": "vinod-portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio website built with Node.js and Express",
+  "keywords": [
+    "portfolio",
+    "nodejs",
+    "express",
+    "web-development"
+  ],
+  "license": "ISC",
+  "author": "Vinod Acharya",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

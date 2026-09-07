@@ -31,16 +31,45 @@ body {
     opacity: 0;
 
     transform: translate(-50%, -50%);
+
+    transition:
+    transform 0.8s ease,
+    opacity 0.4s ease,
+    width 0.8s ease,
+    height 0.8s ease;
 }
 
 .rocket {
     position: fixed;
+    pointer-events: auto;
+
     top: 35%;
     left: 70%;
 
-    transform: translate(-50%, -50%);
-    font-size: 40px;
+    font-size: 60px;
+
     opacity: 0.01;
 
-    pointer-events: none;
+    transform: translate(-50%, -50%);
+
+    transition:
+        opacity 0.4s ease,
+        filter 0.8s ease,
+        transform 0.8s ease;
+}
+
+.rocket.active {
+    filter:
+        drop-shadow(0 0 5px white)
+        drop-shadow(0 0 15px white)
+        drop-shadow(0 0 35px white);
+
+    transform: translate(-50%, -50%) scale(1.08);
+}
+
+.energy.transferring {
+    width: 40px;
+    height: 40px;
+
+    opacity: 1;
 }

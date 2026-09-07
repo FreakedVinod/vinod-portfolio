@@ -2,26 +2,41 @@ const energy = document.querySelector(".energy");
 const rocket = document.querySelector(".rocket");
 
 let energyAwake = false;
+let rocketActivated = false;
 
-document.addEventListener("click", () => {
+let mouseX = 0;
+let mouseY = 0;
+
+let energyX = 0;
+let energyY = 0;
+
+document.addEventListener("click", (event) => {
+    if (!energyAwake) {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+        energyX = mouseX;
+        energyY = mouseY;
+    }
+
     energyAwake = true;
 });
 
 document.addEventListener("mousemove", (event) => {
-    if (!energyAwake) {
+    if (!energyAwake || rocketActivated) {
         return;
     }
 
-    const x = event.clientX;
-    const y = event.clientY;
+    mouseX = event.clientX;
+    mouseY = event.clientY;
 
     const rocketRect = rocket.getBoundingClientRect();
 
     const rocketX = rocketRect.left + rocketRect.width / 2;
     const rocketY = rocketRect.top + rocketRect.height / 2;
 
-    const dx = rocketX - x;
-    const dy = rocketY - y;
+    const dx = rocketX - energyX;
+    const dy = rocketY - energyY;
 
     const distance = Math.sqrt(dx ** 2 + dy ** 2);
 
@@ -34,8 +49,36 @@ document.addEventListener("mousemove", (event) => {
 
     energy.style.opacity = intensity;
     rocket.style.opacity = intensity;
-    
+});
+
+rocket.addEventListener("click", () => {
+    rocketActivated = true;
+
+    rocket.classList.add("active");
+
+    const rocketRect = rocket.getBoundingClientRect();
+
+    const rocketX = rocketRect.left + rocketRect.width / 2;
+    const rocketY = rocketRect.top + rocketRect.height / 2;
+
+    energyX = rocketX;
+    energyY = rocketY;
 
     energy.style.transform =
-        `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        `translate(${rocketX}px, ${rocketY}px) translate(-50%, -50%)`;
+
+    energy.classList.add("transferring");
 });
+function animateEnergy() {
+    if (energyAwake && !rocketActivated) {
+        energyX += (mouseX - energyX) * 0.12;
+        energyY += (mouseY - energyY) * 0.12;
+
+        energy.style.transform =
+            `translate(${energyX}px, ${energyY}px) translate(-50%, -50%)`;
+    }
+
+    requestAnimationFrame(animateEnergy);
+}
+
+animateEnergy();

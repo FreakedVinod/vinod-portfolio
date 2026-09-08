@@ -1,8 +1,15 @@
 const energy = document.querySelector(".energy");
 const rocket = document.querySelector(".rocket");
+const space = document.querySelector(".space");
 
+const safeRadius = 150;
+const INTRO_DURATION = 3500;
+
+let launchStartTime = 0;
 let energyAwake = false;
 let rocketActivated = false;
+let transitionStarted = false;
+let speed = 0;
 
 let mouseX = 0;
 let mouseY = 0;
@@ -68,7 +75,22 @@ rocket.addEventListener("click", () => {
         `translate(${rocketX}px, ${rocketY}px) translate(-50%, -50%)`;
 
     energy.classList.add("transferring");
+
+    setTimeout(() => {
+        rocket.classList.add("charging");
+    }, 800);
+
+    setTimeout(() => {
+        rocket.classList.add("launching");
+
+        prepareStars();
+
+        launchStartTime = performance.now();
+
+        accelerateRocket();
+    }, 2000);
 });
+
 function animateEnergy() {
     if (energyAwake && !rocketActivated) {
         energyX += (mouseX - energyX) * 0.12;
@@ -82,3 +104,133 @@ function animateEnergy() {
 }
 
 animateEnergy();
+
+function accelerateRocket() {
+    if (!rocketActivated) {
+        return;
+    }
+
+    const elapsed =
+        (performance.now() - launchStartTime) / INTRO_DURATION;
+
+    // Keep acceleration between 0 and 1
+    const progress = Math.min(elapsed, 1);
+
+    speed = progress * progress * progress;
+
+    // Start the next scene once
+    if (elapsed >= 1 && !transitionStarted) {
+        transitionStarted = true;
+
+        rocket.classList.add("departing");
+
+        energy.style.opacity = "0";
+
+        setTimeout(() => {
+            beginZoomOut();
+        }, 1000);
+    }
+
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    stars.forEach((star) => {
+        let distance = Number(star.dataset.distance);
+
+        const angle = Number(star.dataset.angle);
+        const starSpeed = Number(star.dataset.speed);
+
+        // Stars continue moving even after the title appears
+        distance += speed * starSpeed * 6;
+
+        star.dataset.distance = distance;
+
+        const x =
+            centerX + Math.cos(angle) * distance;
+
+        const y =
+            centerY + Math.sin(angle) * distance;
+
+        const availableLength =
+            distance - safeRadius;
+
+        const length = Math.max(
+            2,
+            Math.min(
+                speed * starSpeed * 180,
+                availableLength
+            )
+        );
+
+        const angleDegrees =
+            angle * (180 / Math.PI);
+
+        star.style.left = `${x}px`;
+        star.style.top = `${y}px`;
+
+        star.style.width = `${2 + length}px`;
+
+        star.style.transform =
+            `translateX(-100%) rotate(${angleDegrees}deg)`;
+
+        if (
+            x < -200 ||
+            x > window.innerWidth + 200 ||
+            y < -200 ||
+            y > window.innerHeight + 200
+        ) {
+            resetStar(star);
+        }
+    });
+
+    requestAnimationFrame(accelerateRocket);
+}
+
+function prepareStars() {
+    stars.forEach((star) => {
+        resetStar(star, true);
+    });
+}
+
+function resetStar(star, initial = false) {
+    const angle = Math.random() * Math.PI * 2;
+
+    const startDistance = initial
+        ? safeRadius + 80 + Math.random() * 350
+        : safeRadius + 20 + Math.random() * 80;
+
+    const starSpeed = 0.6 + Math.random() * 0.8;
+
+    star.dataset.angle = angle;
+    star.dataset.distance = startDistance;
+    star.dataset.speed = starSpeed;
+
+    star.style.opacity = "0.8";
+    star.style.height = `${1 + Math.random() * 1.5}px`;
+}
+
+function createStars(count) {
+    for (let i = 0; i < count; i++) {
+        const star = document.createElement("div");
+
+        star.classList.add("star");
+
+        space.appendChild(star);
+    }
+}
+
+createStars(30);
+
+const stars = document.querySelectorAll(".star");
+
+const portfolioReveal =
+    document.querySelector(".portfolio-reveal");
+
+function beginZoomOut() {
+    space.classList.add("fading");
+
+    rocket.style.opacity = "0";
+    energy.style.opacity = "0";
+
+    portfolioReveal.classList.add("visible");
+}

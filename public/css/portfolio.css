@@ -1,0 +1,93 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+
+    background: #050505;
+    color: white;
+
+    font-family: Arial, sans-serif;
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 20px 5%;
+
+    background: rgba(5, 5, 5, 0.9);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo {
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    color: rgba(255, 255, 255, 0.65);
+
+    text-decoration: none;
+
+    font-size: 0.85rem;
+}
+
+nav a:hover {
+    color: white;
+}
+
+main {
+    width: min(1100px, 90%);
+    margin: auto;
+}
+
+section {
+    min-height: 70vh;
+
+    padding: 100px 0;
+}
+
+.hero {
+    min-height: 80vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.eyebrow {
+    color: rgba(255, 255, 255, 0.45);
+
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+}
+
+h1 {
+    margin: 10px 0;
+
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 300;
+}
+
+h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+}
+
+.hero-description {
+    color: rgba(255, 255, 255, 0.55);
+
+    letter-spacing: 0.12em;
+}

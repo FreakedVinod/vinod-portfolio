@@ -2,6 +2,18 @@ const energy = document.querySelector(".energy");
 const rocket = document.querySelector(".rocket");
 const space = document.querySelector(".space");
 
+const modeSelection =
+    document.querySelector(".mode-selection");
+
+const journeyButton =
+    document.querySelector(".journey-button");
+
+const fastButton =
+    document.querySelector(".fast-button");
+
+const arrivalTransition =
+    document.querySelector(".arrival-transition");
+
 const safeRadius = 150;
 const INTRO_DURATION = 3500;
 
@@ -10,6 +22,7 @@ let energyAwake = false;
 let rocketActivated = false;
 let transitionStarted = false;
 let speed = 0;
+let journeyStarted = false;
 
 let mouseX = 0;
 let mouseY = 0;
@@ -17,7 +30,27 @@ let mouseY = 0;
 let energyX = 0;
 let energyY = 0;
 
+journeyButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    journeyStarted = true;
+
+    modeSelection.classList.remove("visible");
+});
+
+fastButton.addEventListener("click", () => {
+    beginFastTravel();
+});
+
+requestAnimationFrame(() => {
+    modeSelection.classList.add("visible");
+});
+
 document.addEventListener("click", (event) => {
+    if (!journeyStarted) {
+        return;
+    }
+
     if (!energyAwake) {
         mouseX = event.clientX;
         mouseY = event.clientY;
@@ -29,8 +62,9 @@ document.addEventListener("click", (event) => {
     energyAwake = true;
 });
 
+
 document.addEventListener("mousemove", (event) => {
-    if (!energyAwake || rocketActivated) {
+    if (!journeyStarted || !energyAwake || rocketActivated) {
         return;
     }
 
@@ -118,7 +152,6 @@ function accelerateRocket() {
 
     speed = progress * progress * progress;
 
-    // Start the next scene once
     if (elapsed >= 1 && !transitionStarted) {
         transitionStarted = true;
 
@@ -126,9 +159,9 @@ function accelerateRocket() {
 
         energy.style.opacity = "0";
 
-        setTimeout(() => {
-            beginZoomOut();
-        }, 1000);
+        beginZoomOut();
+
+        return;
     }
 
     const centerX = window.innerWidth / 2;
@@ -223,14 +256,19 @@ createStars(30);
 
 const stars = document.querySelectorAll(".star");
 
-const portfolioReveal =
-    document.querySelector(".portfolio-reveal");
-
 function beginZoomOut() {
     space.classList.add("fading");
 
     rocket.style.opacity = "0";
     energy.style.opacity = "0";
 
-    portfolioReveal.classList.add("visible");
+    arrivalTransition.classList.add("active");
+
+    setTimeout(() => {
+        window.location.href = "/portfolio.html";
+    }, 1800);
+}
+
+function beginFastTravel() {
+    window.location.href = "/portfolio.html";
 }
